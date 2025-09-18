@@ -27,6 +27,6 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          file: ./dev/Dockerfile
+          file: ./dev/build/Dockerfile
           tags: "${{ secrets.DOCKERHUB_USERNAME }}/docker-build-cloud-demo:latest"
           outputs: ${{ github.event_name == 'pull_request' && 'type=cacheonly' || 'type=registry' }}
