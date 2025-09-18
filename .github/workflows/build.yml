@@ -9,6 +9,8 @@ on:
 
 env:
   BASE_DEV_VERSION: 2.5.0
+  DOCKER_USERNAME: jdsaling  # 新增：统一管理你的用户名，避免重复修改
+  IMAGE_NAME: wiki           # 镜像名称（可自定义，如 wiki-js）
 
 jobs:
 
@@ -44,15 +46,15 @@ jobs:
     - name: Login to DockerHub
       uses: docker/login-action@v3
       with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        username: ${{ secrets.DOCKERHUB_USERNAME }}  # 确保此处Secret值为 jdsaling
+        password: ${{ secrets.DOCKERHUB_TOKEN }}     # 确保是你的Docker Hub访问令牌
 
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v3
       with:
         registry: ghcr.io
-        username: ${{ github.repository_owner }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+        username: ${{ github.repository_owner }}  # 自动获取你的GitHub用户名（需与jdsaling一致）
+        password: ${{ secrets.GITHUB_TOKEN }}     # GitHub自动生成，无需手动配置
 
     - name: Build and push Docker images
       uses: docker/build-push-action@v5
@@ -61,15 +63,18 @@ jobs:
         file: dev/build/Dockerfile
         push: true
         tags: |
-          requarks/wiki:canary
-          requarks/wiki:canary-${{ env.REL_VERSION_STRICT }}
-          ghcr.io/requarks/wiki:canary
-          ghcr.io/requarks/wiki:canary-${{ env.REL_VERSION_STRICT }}
+          # 原：requarks/wiki:canary → 改为：你的用户名/镜像名:标签
+          ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary
+          ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-${{ env.REL_VERSION_STRICT }}
+          # 原：ghcr.io/requarks/wiki:canary → 改为：ghcr.io/你的用户名/镜像名:标签
+          ghcr.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary
+          ghcr.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-${{ env.REL_VERSION_STRICT }}
 
     - name: Extract compiled files
       run: |
         mkdir -p _dist
-        docker create --name wiki ghcr.io/requarks/wiki:canary-$REL_VERSION_STRICT
+        # 镜像名称同步改为你的GHCR镜像（与上方tags一致）
+        docker create --name wiki ghcr.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-$REL_VERSION_STRICT
         docker cp wiki:/wiki _dist
         docker rm wiki
         rm _dist/wiki/config.yml
@@ -180,8 +185,9 @@ jobs:
         provenance: false
         push: true
         tags: |
-          requarks/wiki:canary-${{ matrix.docker }}-${{ env.REL_VERSION_STRICT }}
-          ghcr.io/requarks/wiki:canary-${{ matrix.docker }}-${{ env.REL_VERSION_STRICT }}
+          # 原：requarks/wiki → 改为你的用户名/镜像名
+          ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-${{ matrix.docker }}-${{ env.REL_VERSION_STRICT }}
+          ghcr.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-${{ matrix.docker }}-${{ env.REL_VERSION_STRICT }}
 
   windows:
     name: Windows Build
@@ -257,13 +263,19 @@ jobs:
       run: |
         echo "Creating the manifests..."
 
-        docker manifest create requarks/wiki:beta-$REL_VERSION_STRICT requarks/wiki:canary-$REL_VERSION_STRICT requarks/wiki:canary-arm64-$REL_VERSION_STRICT
-        docker manifest create ghcr.io/requarks/wiki:beta-$REL_VERSION_STRICT ghcr.io/requarks/wiki:canary-$REL_VERSION_STRICT ghcr.io/requarks/wiki:canary-arm64-$REL_VERSION_STRICT
+        # 原：requarks/wiki → 改为你的用户名/镜像名
+        docker manifest create ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:beta-$REL_VERSION_STRICT \
+          ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-$REL_VERSION_STRICT \
+          ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-arm64-$REL_VERSION_STRICT
+        
+        docker manifest create ghcr.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:beta-$REL_VERSION_STRICT \
+          ghcr.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-$REL_VERSION_STRICT \
+          ghcr.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-arm64-$REL_VERSION_STRICT
 
         echo "Pushing the manifests..."
 
-        docker manifest push -p requarks/wiki:beta-$REL_VERSION_STRICT
-        docker manifest push -p ghcr.io/requarks/wiki:beta-$REL_VERSION_STRICT
+        docker manifest push -p ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:beta-$REL_VERSION_STRICT
+        docker manifest push -p ghcr.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:beta-$REL_VERSION_STRICT
 
   release:
     name: Publish Release Images
@@ -307,25 +319,50 @@ jobs:
         echo "Using major $MAJOR and minor $MINOR..."
         echo "Creating the manifests..."
 
-        docker manifest create requarks/wiki:$REL_VERSION_STRICT requarks/wiki:canary-$REL_VERSION_STRICT requarks/wiki:canary-arm64-$REL_VERSION_STRICT
-        docker manifest create requarks/wiki:$MAJOR requarks/wiki:canary-$REL_VERSION_STRICT requarks/wiki:canary-arm64-$REL_VERSION_STRICT
-        docker manifest create requarks/wiki:$MAJORMINOR requarks/wiki:canary-$REL_VERSION_STRICT requarks/wiki:canary-arm64-$REL_VERSION_STRICT
-        docker manifest create requarks/wiki:latest requarks/wiki:canary-$REL_VERSION_STRICT requarks/wiki:canary-arm64-$REL_VERSION_STRICT
-        docker manifest create ghcr.io/requarks/wiki:$REL_VERSION_STRICT ghcr.io/requarks/wiki:canary-$REL_VERSION_STRICT ghcr.io/requarks/wiki:canary-arm64-$REL_VERSION_STRICT
-        docker manifest create ghcr.io/requarks/wiki:$MAJOR ghcr.io/requarks/wiki:canary-$REL_VERSION_STRICT ghcr.io/requarks/wiki:canary-arm64-$REL_VERSION_STRICT
-        docker manifest create ghcr.io/requarks/wiki:$MAJORMINOR ghcr.io/requarks/wiki:canary-$REL_VERSION_STRICT ghcr.io/requarks/wiki:canary-arm64-$REL_VERSION_STRICT
-        docker manifest create ghcr.io/requarks/wiki:latest ghcr.io/requarks/wiki:canary-$REL_VERSION_STRICT ghcr.io/requarks/wiki:canary-arm64-$REL_VERSION_STRICT
+        # 所有镜像标签均改为你的用户名/镜像名
+        docker manifest create ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:$REL_VERSION_STRICT \
+          ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-$REL_VERSION_STRICT \
+          ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-arm64-$REL_VERSION_STRICT
+        
+        docker manifest create ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:$MAJOR \
+          ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-$REL_VERSION_STRICT \
+          ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-arm64-$REL_VERSION_STRICT
+        
+        docker manifest create ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:$MAJORMINOR \
+          ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-$REL_VERSION_STRICT \
+          ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-arm64-$REL_VERSION_STRICT
+        
+        docker manifest create ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest \
+          ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-$REL_VERSION_STRICT \
+          ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-arm64-$REL_VERSION_STRICT
+        
+        docker manifest create ghcr.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:$REL_VERSION_STRICT \
+          ghcr.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-$REL_VERSION_STRICT \
+          ghcr.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-arm64-$REL_VERSION_STRICT
+        
+        docker manifest create ghcr.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:$MAJOR \
+          ghcr.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-$REL_VERSION_STRICT \
+          ghcr.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-arm64-$REL_VERSION_STRICT
+        
+        docker manifest create ghcr.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:$MAJORMINOR \
+          ghcr.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-$REL_VERSION_STRICT \
+          ghcr.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-arm64-$REL_VERSION_STRICT
+        
+        docker manifest create ghcr.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest \
+          ghcr.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-$REL_VERSION_STRICT \
+          ghcr.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-arm64-$REL_VERSION_STRICT
 
         echo "Pushing the manifests..."
 
-        docker manifest push -p requarks/wiki:$REL_VERSION_STRICT
-        docker manifest push -p requarks/wiki:$MAJOR
-        docker manifest push -p requarks/wiki:$MAJORMINOR
-        docker manifest push -p requarks/wiki:latest
-        docker manifest push -p ghcr.io/requarks/wiki:$REL_VERSION_STRICT
-        docker manifest push -p ghcr.io/requarks/wiki:$MAJOR
-        docker manifest push -p ghcr.io/requarks/wiki:$MAJORMINOR
-        docker manifest push -p ghcr.io/requarks/wiki:latest
+        # 推送所有标签
+        docker manifest push -p ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:$REL_VERSION_STRICT
+        docker manifest push -p ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:$MAJOR
+        docker manifest push -p ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:$MAJORMINOR
+        docker manifest push -p ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest
+        docker manifest push -p ghcr.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:$REL_VERSION_STRICT
+        docker manifest push -p ghcr.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:$MAJOR
+        docker manifest push -p ghcr.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:$MAJORMINOR
+        docker manifest push -p ghcr.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest
 
     - name: Download Linux Build
       uses: actions/download-artifact@v4
@@ -378,13 +415,13 @@ jobs:
         disable_web_page_preview: true
         message: |
           Wiki.js *${{ github.ref_name }}* has been released!
-          See [release notes](https://github.com/requarks/wiki/releases) for details.
+          See [release notes](https://github.com/${{ github.repository_owner }}/${{ github.repository.name }}/releases) for details.  # 修复release链接为你的仓库
 
     - name: Notify Discord Channel
       uses: sebastianpopp/discord-action@v2.0
       with:
         webhook: ${{ secrets.DISCORD_WEBHOOK }}
-        message: Wiki.js ${{ github.ref_name }} has been released! See https://github.com/requarks/wiki/releases for details.
+        message: Wiki.js ${{ github.ref_name }} has been released! See https://github.com/${{ github.repository_owner }}/${{ github.repository.name }}/releases for details.  # 修复release链接
 
   # build-do-image:
   #   name: Build DigitalOcean Image
