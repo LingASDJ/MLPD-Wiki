@@ -63,10 +63,8 @@ jobs:
         file: dev/build/Dockerfile
         push: true
         tags: |
-          # 原：requarks/wiki:canary → 改为：你的用户名/镜像名:标签
           ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary
           ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-${{ env.REL_VERSION_STRICT }}
-          # 原：ghcr.io/requarks/wiki:canary → 改为：ghcr.io/你的用户名/镜像名:标签
           ghcr.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary
           ghcr.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-${{ env.REL_VERSION_STRICT }}
 
@@ -185,7 +183,6 @@ jobs:
         provenance: false
         push: true
         tags: |
-          # 原：requarks/wiki → 改为你的用户名/镜像名
           ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-${{ matrix.docker }}-${{ env.REL_VERSION_STRICT }}
           ghcr.io/${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-${{ matrix.docker }}-${{ env.REL_VERSION_STRICT }}
 
@@ -263,7 +260,6 @@ jobs:
       run: |
         echo "Creating the manifests..."
 
-        # 原：requarks/wiki → 改为你的用户名/镜像名
         docker manifest create ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:beta-$REL_VERSION_STRICT \
           ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-$REL_VERSION_STRICT \
           ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:canary-arm64-$REL_VERSION_STRICT
