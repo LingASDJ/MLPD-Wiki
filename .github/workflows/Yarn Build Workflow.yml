@@ -1,0 +1,64 @@
+# 工作流名称（在 GitHub Actions 页面显示）
+name: Yarn Build Workflow
+
+# 触发条件：推送到 main 分支 或 向 main 分支提交 PR 时触发
+# 可根据实际分支名修改（如 master、dev 等）
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+# 工作流的核心任务集合
+jobs:
+  build:
+    # 运行环境：使用最新版 Ubuntu（稳定且常用）
+    runs-on: ubuntu-latest
+
+    # 环境变量（可根据项目需求添加，如 API 地址等）
+    env:
+      NODE_VERSION: 18.x  # 项目依赖的 Node.js 版本（必填，需与本地一致）
+      BUILD_OUTPUT_DIR: build  # 产物输出目录（根据项目实际修改，如 dist、out 等）
+
+    # 任务步骤（按顺序执行）
+    steps:
+      ###########################################################################
+      # 步骤 1：检出代码（将 GitHub 仓库代码拉取到 Actions 运行环境）
+      ###########################################################################
+      - name: Checkout code
+        uses: actions/checkout@v4  # 使用官方检出 Action，v4 为最新稳定版
+
+      ###########################################################################
+      # 步骤 2：设置 Node.js 环境（匹配项目依赖的版本）
+      ###########################################################################
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4  # 官方 Node.js 环境配置 Action
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'yarn'  # 自动缓存 yarn 依赖（无需手动配置缓存路径，简化操作）
+
+      ###########################################################################
+      # 步骤 3：安装项目依赖（使用 yarn 安装）
+      ###########################################################################
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile  # 锁定依赖版本，避免自动升级导致的问题
+        # 说明：--frozen-lockfile 强制使用 yarn.lock 中的版本，确保构建一致性
+
+      ###########################################################################
+      # 步骤 4：执行 yarn build 构建项目
+      ###########################################################################
+      - name: Run yarn build
+        run: yarn build  # 核心构建命令，需确保 package.json 中已定义 "build" 脚本
+        # 若构建需要环境变量（如生产环境 API），可在此处添加：
+        # env:
+        #   REACT_APP_API_URL: ${{ secrets.PROD_API_URL }}  # 从 GitHub Secrets 读取敏感信息
+
+      ###########################################################################
+      # 步骤 5：保存构建产物（可选，用于后续部署或下载）
+      ###########################################################################
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4  # 官方产物上传 Action
+        with:
+          name: ${{ github.sha }}-build  # 产物包名称（包含 commit SHA，便于追溯）
+          path: ${{ env.BUILD_OUTPUT_DIR }}  # 需上传的产物目录
+          retention-days: 7  # 产物保留时间（默认 90 天，可按需调整）
