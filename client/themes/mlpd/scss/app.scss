@@ -1,1417 +1,1205 @@
-// ==================================================
-// 1. 全局变量定义（统一管理，避免重复冲突）
-// ==================================================
-// 基础色彩变量
-$black: #000;
-$white: #fff;
-$red: red;
-$red-dark: #590707;
-$purple: #a2f;
-$blue-light: #0ff;
-$gray-dark: #2b2b2b;
-$brown-dark: #7a2717;
+/* THEME SPECIFIC STYLES */
 
-// 主题色彩变量（对齐Vuetify mc()函数逻辑）
-$theme-primary: mc('theme', 'primary');
-$theme-grey-50: mc('grey', '50');
-$theme-grey-100: mc('grey', '100');
-$theme-grey-200: mc('grey', '200');
-$theme-grey-300: mc('grey', '300');
-$theme-grey-400: mc('grey', '400');
-$theme-grey-500: mc('grey', '500');
-$theme-grey-600: mc('grey', '600');
-$theme-grey-700: mc('grey', '700');
-$theme-grey-800: mc('grey', '800');
-$theme-grey-900: mc('grey', '900');
-$theme-blue-500: mc('blue', '500');
-$theme-blue-50: mc('blue', '50');
-$theme-blue-200: mc('blue', '200');
-$theme-blue-300: mc('blue', '300');
-$theme-blue-700: mc('blue', '700');
-$theme-blue-800: mc('blue', '800');
-$theme-blue-900: mc('blue', '900');
-
-$theme-red-200: mc('red', '200');
-$theme-red-300: mc('red', '300');
-$theme-red-700: mc('red', '700');
-$theme-red-900: mc('red', '900');
-
-$theme-green-50: mc('green', '50');
-$theme-green-300: mc('green', '300');
-$theme-green-900: mc('green', '900');
-
-$theme-orange-50: mc('orange', '50');
-$theme-orange-300: mc('orange', '300');
-$theme-orange-900: mc('orange', '900');
-
-$theme-purple-50: mc('purple', '50');
-$theme-purple-300: mc('purple', '300');
-$theme-purple-900: mc('purple', '900');
-
-$theme-blue-grey-50: mc('blue-grey', '50');
-$theme-blue-grey-500: mc('blue-grey', '500');
-$theme-blue-grey-900: mc('blue-grey', '900');
-
-$theme-indigo-50: mc('indigo', '50');
-$theme-indigo-100: mc('indigo', '100');
-$theme-indigo-300: mc('indigo', '300');
-$theme-indigo-800: mc('indigo', '800');
-
-// 布局变量
-$mobile-breakpoint: 768px;
-$border-radius-base: 7px;
-$border-radius-sm: 5px;
-$border-radius-xs: 3px;
-
-// 字体变量
-$font-mono: 'Roboto Mono', monospace;
-$font-icon: "Material Design Icons", sans-serif;
-
-
-// ==================================================
-// 2. 基础工具类样式（优先级：基础 > 组件）
-// ==================================================
-// 响应式隐藏
-.none-mobile {
-  @media screen and (max-width: $mobile-breakpoint) {
-    display: none !important; // 显式优先级，避免被主题样式覆盖
-  }
-}
-
-// 文本颜色
-#red {
-  color: $red !important; // ID选择器默认优先级高，补充!important保险
-}
-
-#blue {
-  color: $blue-light !important;
-}
-
-// 文本大小工具类
-.text-huge {
-  font-size: 1.8em;
-}
-
-.text-big {
-  font-size: 1.4em;
-}
-
-.text-small {
-  font-size: .85em;
-}
-
-.text-tiny {
-  font-size: .7em;
-}
-
-// 表格基础样式（解决原.wikitable与主题表格冲突）
-.wikitable {
-  @extend %table-base; // 继承表格基础样式
-  text-align: center;
-  width: 100%;
-  display: table;
-}
-
-// 表格基础混合器（避免重复代码）
-%table-base {
-  margin: .5rem 0;
-  border-spacing: 0;
-  border-radius: $border-radius-sm;
-  border: 1px solid $theme-grey-300;
-
-  .theme--dark & {
-    border-color: $theme-grey-600;
-  }
-}
-
-
-// ==================================================
-// 3. 自定义组件样式（优先级：组件 > 基础）
-// ==================================================
-// 工具提示组件
-.tooltip {
+.v-main .contents {
+  color: mc('grey', '800');
+  padding: .5rem 0 50px;
   position: relative;
-  display: inline-block;
-  border-bottom: 1px dotted $black;
 
-  .tooltiptext {
-    visibility: hidden;
-    width: 240px;
-    background-color: $black;
-    color: $white;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px 0;
-    position: absolute;
-    z-index: 100; // 提高z-index，避免被主题元素遮挡
-    top: 100%;
-    left: 50%;
-    margin-left: -60px;
+  > div > *:first-child {
+    margin-top: 0;
   }
 
-  &:hover .tooltiptext {
-    visibility: visible;
+  @at-root .theme--dark & {
+    color: mc('grey', '300');
   }
-}
 
-// 敌人图标组件
-.enemyicon {
-  position: relative;
-  display: inline-block;
+  // ---------------------------------
+  // LINKS
+  // ---------------------------------
 
-  &-index {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 50px;
-    height: 16px;
-    line-height: 16px;
-    font-size: 14px;
-    text-align: center;
-    font-weight: 700;
-    font-family: sans-serif;
-    color: $white;
-    background-color: rgba($black, 0.6);
-    z-index: 10; // 确保序号在图标上层
+  a {
+    color: mc('blue', '700');
+
+    &.is-internal-link.is-invalid-page {
+      color: mc('red', '700');
+
+      @at-root .theme--dark & {
+        color: mc('red', '200');
+      }
+    }
+
+    &.is-external-link {
+      padding-right: 3px;
+
+      &::after {
+        font-family: 'Material Design Icons', sans-serif;
+        font-size: 24px/1;
+        padding-left: 3px;
+        display: inline-block;
+        content: '\F03CC';
+        color: mc('grey', '500');
+        text-decoration: none;
+      }
+    }
+
+    @at-root .theme--dark & {
+      color: mc('blue', '200');
+    }
   }
-}
 
-// 状态标签组件
-.yes {
-  background: $gray-dark;
-  color: $white;
-  padding: 0 10px;
-  border-radius: 20px;
-  box-shadow: 0 0 4px 0 $red-dark;
-  display: inline-block; // 避免行内元素样式异常
-}
+  // ---------------------------------
+  // HEADERS
+  // ---------------------------------
 
-// 敌人图片样式
-.enemy-image {
-  width: 130px;
-  height: 130px;
-  display: block;
-  max-width: none;
-  object-fit: cover; // 补充图片适配，避免变形
-}
-
-// 配方槽组件
-.recipe_slot {
-  border: 2px solid $purple;
-  border-radius: 15px;
-  padding: 3px;
-
-  @media (max-width: $mobile-breakpoint) {
-    width: 70%;
-    margin: 0 auto; // 移动端居中，优化布局
-  }
-}
-
-// 页脚组件
-.footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  text-align: center;
-  padding: 10px 0; // 补充内边距，避免内容紧贴底部
-  background-color: $white; // 背景色隔离，避免与内容重叠
-  .theme--dark & {
-    background-color: $theme-grey-900;
-  }
-  z-index: 99; // 确保在内容上层，避免被遮挡
-}
-
-
-// ==================================================
-// 4. 主题核心样式（优先级：主题 > 组件，通过父级嵌套控制）
-// ==================================================
-.v-main {
-  .contents {
-    color: $theme-grey-800;
-    padding: .5rem 0 50px;
+  h1, h2, h3, h4, h5, h6 {
     position: relative;
 
-    > div > *:first-child {
-      margin-top: 0;
+    &:first-child {
+      padding-top: 0;
     }
 
-    .theme--dark & {
-      color: $theme-grey-300;
-    }
-
-    // ---------------------------------
-    // 链接样式
-    // ---------------------------------
-    a {
-      color: $theme-blue-700;
-
-      &.is-internal-link.is-invalid-page {
-        color: $theme-red-700;
-
-        .theme--dark & {
-          color: $theme-red-200;
-        }
-      }
-
-      &.is-external-link {
-        padding-right: 3px;
-
-        &::after {
-          font-family: $font-icon;
-          font-size: 24px/1;
-          padding-left: 3px;
-          display: inline-block;
-          content: '\F03CC';
-          color: $theme-grey-500;
-          text-decoration: none;
-        }
-      }
-
-      .theme--dark & {
-        color: $theme-blue-200;
-      }
-    }
-
-    // ---------------------------------
-    // 标题样式
-    // ---------------------------------
-    h1, h2, h3, h4, h5, h6 {
-      position: relative;
-
-      &:first-child {
-        padding-top: 0;
-      }
-
-      &:hover {
-        .toc-anchor {
-          display: block;
-        }
-      }
-
+    &:hover {
       .toc-anchor {
-        display: none;
-        position: absolute;
-        right: 1rem;
-        bottom: .5rem;
-        font-size: 1.25rem;
-        text-decoration: none;
-        color: $theme-grey-500;
-      }
-
-      & + h2, & + h3, & + h4, & + h5, & + h6 {
-        margin-top: 8px;
-      }
-
-      & + hr.footnotes-sep {
-        display: none;
+        display: block;
       }
     }
 
-    h1 {
-      padding: 0;
-      color: $theme-blue-800;
-      margin-top: 2rem;
-      position: relative;
-
-      .theme--dark & {
-        color: $theme-grey-300;
-      }
-
-      &::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 2px;
-        background: linear-gradient(to right, $theme-primary, rgba($theme-primary, 0));
-        border-radius: $border-radius-xs;
-
-        .theme--dark & {
-          background: linear-gradient(to right, $theme-blue-300 0%, $theme-blue-500 10%, rgba($theme-blue-900, 0) 100%);
-        }
-
-        .is-rtl & {
-          background: linear-gradient(to left, $theme-primary, rgba($theme-primary, 0));
-        }
-        .theme--dark.is-rtl & {
-          background: linear-gradient(to left, $theme-grey-600, rgba($theme-grey-600, 0));
-        }
-      }
+    .toc-anchor {
+      display: none;
+      position: absolute;
+      right: 1rem;
+      bottom: .5rem;
+      font-size: 1.25rem;
+      text-decoration: none;
+      color: mc('grey', '500');
     }
 
-    h2 {
-      margin: 1rem 0 0 0;
-      color: $theme-grey-800;
-      position: relative;
-
-      .theme--dark & {
-        color: $theme-grey-400;
-      }
-
-      &::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 1px;
-        background: linear-gradient(to right, $theme-grey-700, rgba($theme-grey-700, 0));
-
-        .theme--dark & {
-          background: linear-gradient(to right, $theme-grey-300, rgba($theme-grey-700, 0));
-        }
-
-        .is-rtl & {
-          background: linear-gradient(to left, $theme-grey-700, rgba($theme-grey-700, 0));
-        }
-        .theme--dark.is-rtl & {
-          background: linear-gradient(to left, $theme-grey-300, rgba($theme-grey-700, 0));
-        }
-      }
+    & + h2, & + h3, & + h4, & + h5, & + h6 {
+      margin-top: 8px;
     }
 
-    h3 {
-      margin: 8px 0 0 0;
-      color: $theme-grey-700;
-      position: relative;
+    & + hr.footnotes-sep {
+      display: none;
+    }
+  }
 
-      .theme--dark & {
-        color: $theme-grey-600;
-      }
+  h1 {
+    padding: 0;
+    color: mc('blue', '800');
+    margin-top: 2rem;
+    position: relative;
 
-      &::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 1px;
-        background: linear-gradient(to right, $theme-grey-500, rgba($theme-grey-500, 0) 90%);
-      }
+    @at-root .theme--dark & {
+      color: mc('grey', '300');
     }
 
-    h4, h5, h6 {
-      font-size: 1rem;
-      margin: 8px 0 0 0;
-      color: $theme-grey-700;
-      position: relative;
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(to right, mc('theme', 'primary'), rgba(mc('theme', 'primary'), 0));
+      border-radius: 3px;
 
-      .theme--dark & {
-        color: $theme-grey-600;
+      @at-root .theme--dark & {
+        background: linear-gradient(to right, mc('blue', '300') 0%, mc('blue', '500') 10%, rgba(mc('blue', '900'), 0) 100%);
       }
 
-      &::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 1px;
-        background: linear-gradient(to right, $theme-grey-500, rgba($theme-grey-500, 0) 70%);
+      @at-root .is-rtl & {
+        background: linear-gradient(to left, mc('theme', 'primary'), rgba(mc('theme', 'primary'), 0));
       }
-    }
-
-    h5 {
-      &::after {
-        background: linear-gradient(to right, $theme-grey-500, rgba($theme-grey-500, 0) 50%);
+      @at-root .theme--dark.is-rtl & {
+        background: linear-gradient(to left, mc('grey', '600'), rgba(mc('grey', '600'), 0));
       }
     }
+  }
+  h2 {
+    margin: 1rem 0 0 0;
+    color: mc('grey', '800');
+    position: relative;
 
-    h6 {
-      &::after {
-        background: linear-gradient(to right, $theme-grey-500, rgba($theme-grey-500, 0) 30%);
-      }
+    @at-root .theme--dark & {
+      color: mc('grey', '400');
     }
 
-    // ---------------------------------
-    // 段落样式
-    // ---------------------------------
-    p {
-      padding: 1rem 0 0 0;
-      margin: 0;
-
-      .contents > div > p:first-child {
-        padding-top: 0;
-      }
-
-      .v-application & {
-        margin-bottom: 0;
-      }
-    }
-
-    hr {
-      margin: 1rem 0;
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
       height: 1px;
+      background: linear-gradient(to right, mc('grey', '700'), rgba(mc('grey', '700'), 0));
+
+      @at-root .theme--dark & {
+        background: linear-gradient(to right, mc('grey', '300'), rgba(mc('grey', '700'), 0));
+      }
+
+      @at-root .is-rtl & {
+        background: linear-gradient(to left, mc('grey', '700'), rgba(mc('grey', '700'), 0));
+      }
+      @at-root .theme--dark.is-rtl & {
+        background: linear-gradient(to left, mc('grey', '300'), rgba(mc('grey', '700'), 0));
+      }
+    }
+  }
+  h3 {
+    margin: 8px 0 0 0;
+    color: mc('grey', '700');
+    position: relative;
+
+    @at-root .theme--dark & {
+      color: mc('grey', '600');
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(to right, mc('grey', '500'), rgba(mc('grey', '500'), 0) 90%);
+    }
+  }
+  h4, h5, h6 {
+    font-size: 1rem;
+    margin: 8px 0 0 0;
+    color: mc('grey', '700');
+    position: relative;
+
+    @at-root .theme--dark & {
+      color: mc('grey', '600');
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(to right, mc('grey', '500'), rgba(mc('grey', '500'), 0) 70%);
+    }
+  }
+  h5 {
+    &::after {
+      background: linear-gradient(to right, mc('grey', '500'), rgba(mc('grey', '500'), 0) 50%);
+    }
+  }
+  h6 {
+    &::after {
+      background: linear-gradient(to right, mc('grey', '500'), rgba(mc('grey', '500'), 0) 30%);
+    }
+  }
+
+  // ---------------------------------
+  // PARAGRAPHS
+  // ---------------------------------
+
+  p {
+    padding: 1rem 0 0 0;
+    margin: 0;
+
+    @at-root .contents > div > p:first-child {
+      padding-top: 0;
+    }
+
+    @at-root .v-application & {
+      margin-bottom: 0;
+    }
+  }
+
+  hr {
+    margin: 1rem 0;
+    height: 1px;
+    border: none;
+    background-color: mc('grey', '400');
+
+    @at-root .theme--dark & {
+      background-color: mc('grey', '700');
+    }
+  }
+
+  .emoji {
+    height: 1.25em;
+    margin: 0 1px -4px;
+  }
+
+  .text-huge {
+    font-size: 1.8em;
+  }
+  .text-big {
+    font-size: 1.4em;
+  }
+  .text-small {
+    font-size: .85em;
+  }
+  .text-tiny {
+    font-size: .7em;
+  }
+
+  blockquote {
+    padding: 0 1rem 1rem 1rem;
+    background-color: mc('blue-grey', '50');
+    border-left: 55px solid mc('blue-grey', '500');
+    border-radius: .5rem;
+    margin: 1rem 0;
+    position: relative;
+
+    @at-root .theme--dark & {
+      background-color: mc('blue-grey', '900');
+    }
+
+    &::before {
+      display: inline-block;
+      font: normal normal normal 24px/1 "Material Design Icons", sans-serif;
+      position: absolute;
+      margin-top: -12px;
+      top: 50%;
+      left: -38px;
+      color: rgba(255, 255, 255, .7);
+      content: "\F0757";
+    }
+
+    > p:first-child .emoji {
+      margin-right: .5rem;
+    }
+
+    &.valign-center > p {
+      display: flex;
+      align-items: center;
+    }
+
+    &.is-info {
+      background-color: mc('blue', '50');
+      border-color: mc('blue', '300');
+      color: mc('blue', '900');
+
+      &::before {
+        content: "\F02FC";
+      }
+
+      code:not([class^="language-"]) {
+        background-color: mc('blue', '50');
+        color: mc('blue', '800');
+      }
+
+      @at-root .theme--dark & {
+        background-color: mc('blue', '900');
+        color: mc('blue', '50');
+        border-color: mc('blue', '500');
+      }
+    }
+    &.is-warning {
+      background-color: mc('orange', '50');
+      border-color: mc('orange', '300');
+      color: darken(mc('orange', '900'), 10%);
+
+      &::before {
+        content: "\F0026";
+      }
+
+      code:not([class^="language-"]) {
+        background-color: mc('orange', '50');
+        color: mc('orange', '800');
+      }
+
+      @at-root .theme--dark & {
+        background-color: darken(mc('orange', '900'), 5%);
+        color: mc('orange', '100');
+        border-color: mc('orange', '500');
+        box-shadow: 0 0 2px 0 mc('grey', '900');
+      }
+    }
+    &.is-danger {
+      background-color: mc('red', '50');
+      border-color: mc('red', '300');
+      color: mc('red', '900');
+
+      &::before {
+        content: "\F0159";
+      }
+
+      code:not([class^="language-"]) {
+        background-color: mc('red', '50');
+        color: mc('red', '800');
+      }
+
+      @at-root .theme--dark & {
+        background-color: mc('red', '900');
+        color: mc('red', '100');
+        border-color: mc('red', '500');
+      }
+    }
+    &.is-success {
+      background-color: mc('green', '50');
+      border-color: mc('green', '300');
+      color: mc('green', '900');
+
+      &::before {
+        content: "\F0E1E";
+      }
+
+      code:not([class^="language-"]) {
+        background-color: mc('green', '50');
+        color: mc('green', '800');
+      }
+
+      @at-root .theme--dark & {
+        background-color: mc('green', '900');
+        color: mc('green', '50');
+        border-color: mc('green', '500');
+      }
+    }
+  }
+
+  // ---------------------------------
+  // ASCIIDOC SPECIFIC
+  // ---------------------------------
+
+  .admonitionblock {
+    margin: 1rem 0;
+    position: relative;
+
+    table {
       border: none;
-      background-color: $theme-grey-400;
-
-      .theme--dark & {
-        background-color: $theme-grey-700;
-      }
+      background-color: transparent;
+      width: 100%;
     }
 
-    .emoji {
-      height: 1.25em;
-      margin: 0 1px -4px;
-    }
-
-    // ---------------------------------
-    // 引用块样式
-    // ---------------------------------
-    blockquote {
-      padding: 0 1rem 1rem 1rem;
-      background-color: $theme-blue-grey-50;
-      border-left: 55px solid $theme-blue-grey-500;
-      border-radius: .5rem;
-      margin: 1rem 0;
-      position: relative;
-
-      .theme--dark & {
-        background-color: $theme-blue-grey-900;
-      }
+    td.icon {
+      border-bottom-left-radius: 7px;
+      border-top-left-radius: 7px;
+      text-align: center;
+      width: 56px;
 
       &::before {
         display: inline-block;
-        font: normal normal normal 24px/1 $font-icon;
-        position: absolute;
-        margin-top: -12px;
-        top: 50%;
-        left: -38px;
-        color: rgba(255, 255, 255, .7);
-        content: "\F0757";
+        font: normal normal normal 24px/1 "Material Design Icons", sans-serif !important;
       }
+    }
 
-      > p:first-child .emoji {
-        margin-right: .5rem;
-      }
+    td.content {
+      border-bottom-right-radius: 7px;
+      border-top-right-radius: 7px;
+    }
 
-      &.valign-center > p {
-        display: flex;
-        align-items: center;
-      }
-
-      &.is-info {
-        background-color: $theme-blue-50;
-        border-color: $theme-blue-300;
-        color: $theme-blue-900;
-
+    &.note {
+      td.icon {
+        background-color: mc('blue', '300');
+        color: mc('blue', '50');
         &::before {
           content: "\F02FC";
         }
+      }
+      td.content {
+        color: darken(mc('blue', '900'), 10%);
+        background-color: mc('blue', '50');
 
-        code:not([class^="language-"]) {
-          background-color: $theme-blue-50;
-          color: $theme-blue-800;
-        }
-
-        .theme--dark & {
-          background-color: $theme-blue-900;
-          color: $theme-blue-50;
-          border-color: $theme-blue-500;
+        @at-root .theme--dark & {
+          background-color: mc('blue', '900');
+          color: mc('blue', '50');
         }
       }
+    }
+    &.tip {
+      td.icon {
+        background-color: mc('green', '300');
+        color: mc('green', '50');
+        &::before {
+          content: "\F0335";
+        }
+      }
+      td.content {
+        color: darken(mc('green', '900'), 10%);
+        background-color: mc('green', '50');
 
-      &.is-warning {
-        background-color: $theme-orange-50;
-        border-color: $theme-orange-300;
-        color: darken($theme-orange-900, 10%);
+        @at-root .theme--dark & {
+          background-color: mc('green', '900');
+          color: mc('green', '50');
+        }
+      }
+    }
+    &.warning {
+      background-color: transparent !important;
 
+      td.icon {
+        background-color: mc('orange', '300');
+        color: #FFF;
         &::before {
           content: "\F0026";
         }
+      }
+      td.content {
+        color: darken(mc('orange', '900'), 10%);
+        background-color: mc('orange', '50');
 
-        code:not([class^="language-"]) {
-          background-color: $theme-orange-50;
-          color: $theme-orange-800;
-        }
-
-        .theme--dark & {
-          background-color: darken($theme-orange-900, 5%);
-          color: $theme-orange-100;
-          border-color: $theme-orange-500;
-          box-shadow: 0 0 2px 0 $theme-grey-900;
+        @at-root .theme--dark & {
+          background-color: darken(mc('orange', '900'), 5%);
+          color: mc('orange', '100');
         }
       }
+    }
+    &.caution {
+      td.icon {
+        background-color: mc('purple', '300');
+        color: mc('purple', '50');
+        &::before {
+          content: "\f0238";
+        }
+      }
+      td.content {
+        color: darken(mc('purple', '900'), 10%);
+        background-color: mc('purple', '50');
 
-      &.is-danger {
-        background-color: $theme-red-50;
-        border-color: $theme-red-300;
-        color: $theme-red-900;
-
+        @at-root .theme--dark & {
+          background-color: mc('purple', '900');
+          color: mc('purple', '100');
+        }
+      }
+    }
+    &.important {
+      td.icon {
+        background-color: mc('red', '300');
+        color: mc('red', '50');
         &::before {
           content: "\F0159";
         }
-
-        code:not([class^="language-"]) {
-          background-color: $theme-red-50;
-          color: $theme-red-800;
-        }
-
-        .theme--dark & {
-          background-color: $theme-red-900;
-          color: $theme-red-100;
-          border-color: $theme-red-500;
-        }
       }
-
-      &.is-success {
-        background-color: $theme-green-50;
-        border-color: $theme-green-300;
-        color: $theme-green-900;
-
-        &::before {
-          content: "\F0E1E";
-        }
-
-        code:not([class^="language-"]) {
-          background-color: $theme-green-50;
-          color: $theme-green-800;
-        }
-
-        .theme--dark & {
-          background-color: $theme-green-900;
-          color: $theme-green-50;
-          border-color: $theme-green-500;
-        }
-      }
-    }
-
-    // ---------------------------------
-    // ASCIIDOC专用样式
-    // ---------------------------------
-    .admonitionblock {
-      margin: 1rem 0;
-      position: relative;
-
-      table {
-        @extend %table-base;
-        border: none;
-        background-color: transparent;
-        width: 100%;
-      }
-
-      td.icon {
-        border-bottom-left-radius: $border-radius-sm;
-        border-top-left-radius: $border-radius-sm;
-        text-align: center;
-        width: 56px;
-
-        &::before {
-          display: inline-block;
-          font: normal normal normal 24px/1 $font-icon !important;
-        }
-      }
-
       td.content {
-        border-bottom-right-radius: $border-radius-sm;
-        border-top-right-radius: $border-radius-sm;
-      }
+        color: darken(mc('red', '900'), 10%);
+        background-color: mc('red', '50');
 
-      &.note {
-        td.icon {
-          background-color: $theme-blue-300;
-          color: $theme-blue-50;
-          &::before {
-            content: "\F02FC";
-          }
-        }
-        td.content {
-          color: darken($theme-blue-900, 10%);
-          background-color: $theme-blue-50;
-
-          .theme--dark & {
-            background-color: $theme-blue-900;
-            color: $theme-blue-50;
-          }
-        }
-      }
-
-      &.tip {
-        td.icon {
-          background-color: $theme-green-300;
-          color: $theme-green-50;
-          &::before {
-            content: "\F0335";
-          }
-        }
-        td.content {
-          color: darken($theme-green-900, 10%);
-          background-color: $theme-green-50;
-
-          .theme--dark & {
-            background-color: $theme-green-900;
-            color: $theme-green-50;
-          }
-        }
-      }
-
-      &.warning {
-        background-color: transparent !important;
-
-        td.icon {
-          background-color: $theme-orange-300;
-          color: $white;
-          &::before {
-            content: "\F0026";
-          }
-        }
-        td.content {
-          color: darken($theme-orange-900, 10%);
-          background-color: $theme-orange-50;
-
-          .theme--dark & {
-            background-color: darken($theme-orange-900, 5%);
-            color: $theme-orange-100;
-          }
-        }
-      }
-
-      &.caution {
-        td.icon {
-          background-color: $theme-purple-300;
-          color: $theme-purple-50;
-          &::before {
-            content: "\f0238";
-          }
-        }
-        td.content {
-          color: darken($theme-purple-900, 10%);
-          background-color: $theme-purple-50;
-
-          .theme--dark & {
-            background-color: $theme-purple-900;
-            color: $theme-purple-100;
-          }
-        }
-      }
-
-      &.important {
-        td.icon {
-          background-color: $theme-red-300;
-          color: $theme-red-50;
-          &::before {
-            content: "\F0159";
-          }
-        }
-        td.content {
-          color: darken($theme-red-900, 10%);
-          background-color: $theme-red-50;
-
-          .theme--dark & {
-            background-color: $theme-red-900;
-            color: $theme-red-100;
-          }
+        @at-root .theme--dark & {
+          background-color: mc('red', '900');
+          color: mc('red', '100');
         }
       }
     }
+  }
 
-    .exampleblock {
-      > .title {
-        font-style: italic;
-        font-size: 1rem !important;
-        color: $brown-dark;
+  .exampleblock {
+    > .title {
+      font-style: italic;
+      font-size: 1rem !important;
+      color: #7a2717;
 
-        .theme--dark & {
-          color: mc('brown', '300');
-        }
-      }
-      > .content {
-        border: 1px solid $theme-grey-200;
-        border-radius: $border-radius-sm;
-        margin-bottom: 12px;
-        padding: 16px;
+      @at-root .theme--dark & {
+        color: mc('brown', '300');
       }
     }
+    > .content {
+      border: 1px solid mc('grey', '200');
+      border-radius: 7px;
+      margin-bottom: 12px;
+      padding: 16px;
+    }
+  }
+  // ---------------------------------
+  // LISTS
+  // ---------------------------------
 
-    // ---------------------------------
-    // 列表样式
-    // ---------------------------------
-    ol, ul:not(.tabset-tabs) {
-      padding-top: 1rem;
-      width: 100%;
+  ol, ul:not(.tabset-tabs) {
+    padding-top: 1rem;
+    width: 100%;
 
-      .is-rtl & {
+    @at-root .is-rtl & {
+      padding-left: 0;
+      padding-right: 1rem;
+    }
+
+    li > ul, li > ol {
+      padding-top: .5rem;
+      padding-left: 1rem;
+
+      @at-root .is-rtl & {
         padding-left: 0;
         padding-right: 1rem;
       }
+    }
 
-      li > ul, li > ol {
-        padding-top: .5rem;
-        padding-left: 1rem;
+    li + li {
+      margin-top: .5rem;
+    }
 
-        .is-rtl & {
-          padding-left: 0;
-          padding-right: 1rem;
-        }
+    &.links-list {
+      padding-left: 0;
+      list-style-type: none;
+
+      @at-root .is-rtl & {
+        padding-right: 0;
       }
 
-      li + li {
-        margin-top: .5rem;
-      }
+      li {
+        background-color: mc('grey', '50');
+        background-image: linear-gradient(to bottom, #FFF, mc('grey', '50'));
+        border-right: 1px solid mc('grey', '200');
+        border-bottom: 1px solid mc('grey', '200');
+        border-left: 5px solid mc('grey', '300');
+        box-shadow: 0 3px 8px 0 rgba(116, 129, 141, 0.1);
+        padding: 1rem;
+        border-radius: 5px;
+        font-weight: 500;
 
-      &.links-list {
-        padding-left: 0;
-        list-style-type: none;
-
-        .is-rtl & {
-          padding-right: 0;
+        @at-root .is-rtl & {
+          border-left-width: 1px;
+          border-right-width: 5px;
         }
 
-        li {
-          background-color: $theme-grey-50;
-          background-image: linear-gradient(to bottom, $white, $theme-grey-50);
-          border-right: 1px solid $theme-grey-200;
-          border-bottom: 1px solid $theme-grey-200;
-          border-left: 5px solid $theme-grey-300;
-          box-shadow: 0 3px 8px 0 rgba(116, 129, 141, 0.1);
+        &:hover {
+          background-image: linear-gradient(to bottom, #FFF, lighten(mc('blue', '50'), 4%));
+          border-left-color: mc('blue', '500');
+          cursor: pointer;
+
+          @at-root .is-rtl & {
+            border-left-color: mc('grey', '200');
+            border-right-width: mc('blue', '500');
+          }
+        }
+
+        &::before {
+          content: '';
+          display: none;
+        }
+
+        > a {
+          display: block;
+          text-decoration: none;
+          margin: -1rem;
           padding: 1rem;
-          border-radius: $border-radius-sm;
-          font-weight: 500;
 
-          .is-rtl & {
+          > em {
+            font-weight: 400;
+            font-style: normal;
+            color: mc('grey', '700');
+            display: inline-block;
+            padding-left: .5rem;
+            border-left: 1px solid mc('grey', '300');
+            margin-left: .5rem;
+
+            &.is-block {
+              display: block;
+              padding-left: 0;
+              margin-left: 0;
+              border-left: none;
+            }
+          }
+        }
+
+        > em {
+          font-weight: 400;
+          font-style: normal;
+        }
+
+        @at-root .theme--dark & {
+          background-color: mc('grey', '50');
+          background-image: linear-gradient(to bottom, lighten(mc('grey', '900'), 5%), mc('grey', '900'));
+          border-right: 1px solid mc('grey', '900');
+          border-bottom: 1px solid mc('grey', '900');
+          border-left: 5px solid mc('grey', '700');
+          box-shadow: 0 3px 8px 0 rgba(0, 0, 0, 0.1);
+
+          @at-root .theme--dark.is-rtl & {
             border-left-width: 1px;
             border-right-width: 5px;
           }
 
           &:hover {
-            background-image: linear-gradient(to bottom, $white, lighten($theme-blue-50, 4%));
-            border-left-color: $theme-blue-500;
+            background-image: linear-gradient(to bottom, lighten(mc('grey', '900'), 2%), darken(mc('grey', '900'), 3%));
+            border-left-color: mc('indigo', '300');
             cursor: pointer;
 
-            .is-rtl & {
-              border-left-color: $theme-grey-200;
-              border-right-color: $theme-blue-500; // 修复原代码border-right-width错误
-            }
-          }
-
-          &::before {
-            content: '';
-            display: none;
-          }
-
-          > a {
-            display: block;
-            text-decoration: none;
-            margin: -1rem;
-            padding: 1rem;
-
-            > em {
-              font-weight: 400;
-              font-style: normal;
-              color: $theme-grey-700;
-              display: inline-block;
-              padding-left: .5rem;
-              border-left: 1px solid $theme-grey-300;
-              margin-left: .5rem;
-
-              &.is-block {
-                display: block;
-                padding-left: 0;
-                margin-left: 0;
-                border-left: none;
-              }
-            }
-          }
-
-          > em {
-            font-weight: 400;
-            font-style: normal;
-          }
-
-          .theme--dark & {
-            background-color: $theme-grey-50;
-            background-image: linear-gradient(to bottom, lighten($theme-grey-900, 5%), $theme-grey-900);
-            border-right: 1px solid $theme-grey-900;
-            border-bottom: 1px solid $theme-grey-900;
-            border-left: 5px solid $theme-grey-700;
-            box-shadow: 0 3px 8px 0 rgba(0, 0, 0, 0.1);
-
-            .theme--dark.is-rtl & {
-              border-left-width: 1px;
-              border-right-width: 5px;
-            }
-
-            &:hover {
-              background-image: linear-gradient(to bottom, lighten($theme-grey-900, 2%), darken($theme-grey-900, 3%));
-              border-left-color: $theme-indigo-300;
-              cursor: pointer;
-
-              .theme--dark.is-rtl & {
-                border-left-color: $theme-grey-900;
-                border-right-color: $theme-indigo-300; // 修复原代码border-right-width错误
-              }
-            }
-          }
-        }
-      }
-
-      &.grid-list {
-        margin: 1rem 0 0 0;
-        background-color: $white;
-        border: 1px solid $theme-grey-200;
-        padding: 1px;
-        display: inline-block;
-        list-style-type: none;
-
-        .theme--dark & {
-          background-color: $black;
-          border: 1px solid $theme-grey-800;
-        }
-
-        li {
-          background-color: $theme-grey-50;
-          padding: .6rem 1rem;
-          display: block;
-
-          &:nth-child(odd) {
-            background-color: $theme-grey-100;
-          }
-
-          & + li {
-            margin-top: 0;
-          }
-
-          &::before {
-            content: '';
-            display: none;
-          }
-
-          .theme--dark & {
-            background-color: $theme-grey-900;
-
-            &:nth-child(odd) {
-              background-color: darken($theme-grey-900, 5%);
+            @at-root .theme--dark.is-rtl & {
+              border-left-color: mc('grey', '900');
+              border-right-width: mc('indigo', '300');
             }
           }
         }
       }
     }
 
-    ul:not(.tabset-tabs):not(.contains-task-list) {
-      list-style: none;
-      > li::before {
-        position: absolute;
-        left: -1.1rem;
-        content: '\25b8';
-        color: $theme-grey-600;
-        width: 1.35rem;
-
-        .is-rtl & {
-          right: -1.1rem;
-          content: '\25C3';
-        }
-      }
-    }
-
-    ol, ul:not(.tabset-tabs) {
-      > li {
-        position: relative;
-        > p {
-          display: inline-block;
-          vertical-align: top;
-          padding-top: 0;
-
-          &:first-child {
-            width: 100%;
-          }
-        }
-      }
-    }
-
-    dl {
-      dt {
-        margin-top: 0.3em;
-        margin-bottom: 0.3em;
-        font-weight: bold;
-      }
-
-      dd {
-        margin-left: 1.125em;
-        margin-bottom: 0.75em;
-
-        > p {
-          padding: 0;
-        }
-      }
-    }
-
-    // ---------------------------------
-    // 代码样式
-    // ---------------------------------
-    code {
-      background-color: $theme-indigo-50;
-      padding: 0 5px;
-      color: $theme-indigo-800;
-      font-family: $font-mono;
-      font-weight: normal;
-      font-size: 1rem;
-      box-shadow: none;
-
-      &::before, &::after {
-        display: none;
-      }
-
-      .theme--dark & {
-        background-color: darken($theme-grey-900, 5%);
-        color: $theme-indigo-100;
-      }
-    }
-
-    .prismjs {
-      border: none;
-      border-radius: $border-radius-sm;
-      box-shadow: initial;
-      background-color: $theme-grey-900;
-      padding: 1rem 1rem 1rem 3rem;
-      margin: 1rem 0;
-
-      .theme--dark & {
-        background-color: darken($theme-grey-900, 5%);
-      }
-
-      > code {
-        background-color: transparent;
-        padding: 0;
-        color: $white;
-        box-shadow: initial;
-        display: block;
-        font-size: .85rem;
-        font-family: $font-mono;
-
-        &:after, &:before {
-          content: initial;
-          letter-spacing: initial;
-        }
-      }
-    }
-
-    .diagram {
-      margin-top: 1rem;
-      overflow: auto;
-      svg:first-child {
-        direction: ltr;
-      }
-    }
-
-    // ---------------------------------
-    // 任务列表样式
-    // ---------------------------------
-    .contains-task-list {
-      padding-left: 0;
-    }
-
-    .task-list-item {
-      position: relative;
+    &.grid-list {
+      margin: 1rem 0 0 0;
+      background-color: #FFF;
+      border: 1px solid mc('grey', '200');
+      padding: 1px;
+      display: inline-block;
       list-style-type: none;
 
-      &-checkbox[disabled] {
-        width: 1.1rem;
-        height: 1.1rem;
-        top: 2px;
-        position: relative;
-        margin-right: 2px;
+      @at-root .theme--dark & {
+        background-color: #000;
+        border: 1px solid mc('grey', '800');
+      }
 
-        &::after {
-          position: absolute;
-          left: 0;
-          top: 0;
-          content: ' ';
-          display: block;
-          width: 1.1rem;
-          height: 1.1rem;
-          background-color: $white;
-          border: 1px solid $theme-grey-400;
-          border-radius: 2px;
-          font-weight: bold;
-          font-size: .8rem;
-          line-height: 1rem;
-          text-align: center;
+      li {
+        background-color: mc('grey', '50');
+        padding: .6rem 1rem;
+        display: block;
 
-          .theme--dark & {
-            background-color: $theme-grey-900;
-            border-color: $theme-grey-700;
-          }
+        &:nth-child(odd) {
+          background-color: mc('grey', '100');
         }
 
-        &[checked]::after {
-          content: '✓';
+        & + li {
+          margin-top: 0;
+        }
+
+        &::before {
+          content: '';
+          display: none;
+        }
+
+        @at-root .theme--dark & {
+          background-color: mc('grey', '900');
+
+          &:nth-child(odd) {
+            background-color: darken(mc('grey', '900'), 5%);
+          }
+        }
+      }
+    }
+  }
+
+  ul:not(.tabset-tabs):not(.contains-task-list) {
+    list-style: none;
+    > li::before {
+      position: absolute;
+      left: -1.1rem;
+      content: '\25b8';
+      color: mc('grey', '600');
+      width: 1.35rem;
+
+      @at-root .is-rtl & {
+        right: -1.1rem;
+        content: '\25C3';
+      }
+    }
+  }
+  ol, ul:not(.tabset-tabs) {
+    > li {
+      position: relative;
+      > p {
+        display:inline-block;
+        vertical-align:top;
+        padding-top:0;
+
+        &:first-child {
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  dl {
+    dt {
+      margin-top: 0.3em;
+      margin-bottom: 0.3em;
+      font-weight: bold;
+    }
+
+    dd {
+      margin-left: 1.125em;
+      margin-bottom: 0.75em;
+
+      > p {
+        padding: 0;
+      }
+    }
+  }
+
+  // ---------------------------------
+  // CODE
+  // ---------------------------------
+
+  code {
+    background-color: mc('indigo', '50');
+    padding: 0 5px;
+    color: mc('indigo', '800');
+    font-family: 'Roboto Mono', monospace;
+    font-weight: normal;
+    font-size: 1rem;
+    box-shadow: none;
+
+    &::before, &::after {
+      display: none;
+    }
+
+    @at-root .theme--dark & {
+      background-color: darken(mc('grey', '900'), 5%);
+      color: mc('indigo', '100');
+    }
+  }
+
+  .prismjs{
+    border: none;
+    border-radius: 5px;
+    box-shadow: initial;
+    background-color: mc('grey', '900');
+    padding: 1rem 1rem 1rem 3rem;
+    margin: 1rem 0;
+
+    @at-root .theme--dark & {
+      background-color: darken(mc('grey', '900'), 5%);
+    }
+
+    > code {
+      background-color: transparent;
+      padding: 0;
+      color: #FFF;
+      box-shadow: initial;
+      display: block;
+      font-size: .85rem;
+      font-family: 'Roboto Mono', monospace;
+
+      &:after, &:before {
+        content: initial;
+        letter-spacing: initial;
+      }
+    }
+  }
+
+  .diagram {
+    margin-top: 1rem;
+    overflow: auto;
+    svg:first-child {
+      direction: ltr;
+    }
+  }
+
+  // ---------------------------------
+  // TASK LISTS
+  // ---------------------------------
+
+  .contains-task-list {
+    padding-left: 0;
+  }
+
+  .task-list-item {
+    position: relative;
+    list-style-type: none;
+
+    &-checkbox[disabled] {
+      width: 1.1rem;
+      height: 1.1rem;
+      top: 2px;
+      position: relative;
+      margin-right: 2px;
+
+      &::after {
+        position: absolute;
+        left: 0;
+        top: 0;
+        content: ' ';
+        display: block;
+        width: 1.1rem;
+        height: 1.1rem;
+        background-color: #FFF;
+        border: 1px solid mc('grey', '400');
+        border-radius: 2px;
+        font-weight: bold;
+        font-size: .8rem;
+        line-height: 1rem;
+        text-align: center;
+
+        @at-root .theme--dark & {
+          background-color: mc('grey', '900');
+          border-color: mc('grey', '700');
         }
       }
 
-      .contains-task-list {
-        padding: .5rem 0 0 1.5rem;
+      &[checked]::after  {
+        content: '✓';
       }
     }
 
-    // ---------------------------------
-    // 表格样式（主题专用，与.wikitable区分）
-    // ---------------------------------
-    table:not(.wikitable) { // 排除自定义wikitable，避免冲突
-      @extend %table-base;
+    .contains-task-list {
+      padding: .5rem 0 0 1.5rem;
+    }
+  }
 
-      &.dense {
-        td, th {
-          font-size: .85rem;
-          padding: .5rem;
+  // ---------------------------------
+  // TABLES
+  // ---------------------------------
+
+  table {
+    margin: .5rem 0;
+    border-spacing: 0;
+    border-radius: 5px;
+    border: 1px solid mc('grey', '300');
+
+    @at-root .theme--dark & {
+      border-color: mc('grey', '600');
+    }
+
+    &.dense {
+      td, th {
+        font-size: .85rem;
+        padding: .5rem;
+      }
+    }
+
+    th {
+      padding: .75rem;
+      border-bottom: 2px solid mc('grey', '500');
+      color: mc('grey', '600');
+      background-color: mc('grey', '100');
+
+      @at-root .theme--dark & {
+        background-color: darken(mc('grey', '900'), 8%);
+        border-bottom-color: mc('grey', '600');
+        color: mc('grey', '500');
+      }
+
+      &:first-child {
+        border-top-left-radius: 7px;
+      }
+      &:last-child {
+        border-top-right-radius: 7px;
+      }
+    }
+
+    td {
+      padding: .75rem;
+    }
+
+    tr {
+      td {
+        border-bottom: 1px solid mc('grey', '300');
+        border-right: 1px solid mc('grey', '100');
+
+        @at-root .theme--dark & {
+          border-bottom-color: mc('grey', '700');
+          border-right-color: mc('grey', '800');
+        }
+
+        &:nth-child(even) {
+          background-color: mc('grey', '50');
+
+          @at-root .theme--dark & {
+            background-color: darken(mc('grey', '900'), 4%);
+          }
+        }
+
+        &:last-child {
+          border-right: none;
+        }
+      }
+
+      &:nth-child(even) {
+        td {
+          background-color: mc('grey', '50');
+
+          @at-root .theme--dark & {
+            background-color: darken(mc('grey', '800'), 8%);
+          }
+
+          &:nth-child(even) {
+            background-color: mc('grey', '100');
+
+            @at-root .theme--dark & {
+              background-color: darken(mc('grey', '800'), 10%);
+            }
+          }
+        }
+      }
+
+      &:last-child {
+        td {
+          border-bottom: none;
+
+          &:first-child {
+            border-bottom-left-radius: 7px;
+          }
+          &:last-child {
+            border-bottom-right-radius: 7px;
+          }
+        }
+      }
+    }
+  }
+
+  figure.table {
+    margin: 0;
+
+    > table {
+      background-color: #FFF;
+      margin: 0;
+      border-collapse: collapse;
+      box-shadow: 0 0 5px 0 rgba(0, 0, 0, .07);
+
+      @at-root .theme--dark & {
+        background-color: darken(mc('grey', '900'), 3%);
+      }
+
+      td, th {
+        border: 1px solid mc('blue-grey', '100');
+        box-shadow: inset -1px -1px 0 0 #FFF, inset 1px 0 0 #FFF;
+        padding: .5rem .75rem;
+        border-radius: 0 !important;
+
+        @at-root .theme--dark & {
+          border-color: mc('grey', '700');
+          box-shadow: inset -1px -1px 0 0 rgba(0,0,0, .5);
         }
       }
 
       th {
-        padding: .75rem;
-        border-bottom: 2px solid $theme-grey-500;
-        color: $theme-grey-600;
-        background-color: $theme-grey-100;
+        background-color: lighten(mc('blue-grey', '50'), 1%);
+        font-weight: 700;
+        color: mc('blue-grey', '700');
 
-        .theme--dark & {
-          background-color: darken($theme-grey-900, 8%);
-          border-bottom-color: $theme-grey-600;
-          color: $theme-grey-500;
-        }
-
-        &:first-child {
-          border-top-left-radius: $border-radius-sm;
-        }
-        &:last-child {
-          border-top-right-radius: $border-radius-sm;
+        @at-root .theme--dark & {
+          background-color: mc('grey', '800');
+          color: mc('grey', '400');
         }
       }
 
-      td {
-        padding: .75rem;
-      }
+      thead th {
+        border-bottom: 2px solid mc('blue-grey', '100');
 
-      tr {
-        td {
-          border-bottom: 1px solid $theme-grey-300;
-          border-right: 1px solid $theme-grey-100;
-
-          .theme--dark & {
-            border-bottom-color: $theme-grey-700;
-            border-right-color: $theme-grey-800;
-          }
-
-          &:nth-child(even) {
-            background-color: $theme-grey-50;
-
-            .theme--dark & {
-              background-color: darken($theme-grey-900, 4%);
-            }
-          }
-
-          &:last-child {
-            border-right: none;
-          }
-        }
-
-        &:nth-child(even) {
-          td {
-            background-color: $theme-grey-50;
-
-            .theme--dark & {
-              background-color: darken($theme-grey-800, 8%);
-            }
-
-            &:nth-child(even) {
-              background-color: $theme-grey-100;
-
-              .theme--dark & {
-                background-color: darken($theme-grey-800, 10%);
-              }
-            }
-          }
-        }
-
-        &:last-child {
-          td {
-            border-bottom: none;
-
-            &:first-child {
-              border-bottom-left-radius: $border-radius-sm;
-            }
-            &:last-child {
-              border-bottom-right-radius: $border-radius-sm;
-            }
-          }
-        }
-      }
-    }
-
-    figure.table {
-      margin: 0;
-
-      > table {
-        background-color: $white;
-        margin: 0;
-        border-collapse: collapse;
-        box-shadow: 0 0 5px 0 rgba(0, 0, 0, .07);
-
-        .theme--dark & {
-          background-color: darken($theme-grey-900, 3%);
-        }
-
-        td, th {
-          border: 1px solid $theme-blue-grey-100;
-          box-shadow: inset -1px -1px 0 0 $white, inset 1px 0 0 $white;
-          padding: .5rem .75rem;
-          border-radius: 0 !important;
-
-          .theme--dark & {
-            border-color: $theme-grey-700;
-            box-shadow: inset -1px -1px 0 0 rgba(0,0,0, .5);
-          }
-        }
-
-        th {
-          background-color: lighten($theme-blue-grey-50, 1%);
-          font-weight: 700;
-          color: $theme-blue-grey-700;
-
-          .theme--dark & {
-            background-color: $theme-grey-800;
-            color: $theme-grey-400;
-          }
-        }
-
-        thead th {
-          border-bottom: 2px solid $theme-blue-grey-100;
-
-          .theme--dark & {
-            border-bottom: none;
-          }
-        }
-
-        tbody th {
-          background-color: lighten($theme-blue-grey-50, 4%);
-
-          .theme--dark & {
-            background-color: darken($theme-grey-800, 8%);
-          }
-        }
-      }
-    }
-
-    // 表格横向滚动容器
-    .table-container {
-      width: 100%;
-      overflow-x: auto;
-    }
-
-    // ---------------------------------
-    // 图片样式
-    // ---------------------------------
-    img {
-      max-width: 100%;
-
-      &.align-left {
-        float: left;
-        margin: 0 1rem 1rem 0;
-      }
-      &.align-right {
-        float: right;
-        margin: 0 0 1rem 1rem;
-        z-index: 1;
-        position: relative;
-      }
-      &.align-center {
-        display: block;
-        max-width: 100%;
-        margin: auto;
-      }
-      &.align-abstopright {
-        position: absolute;
-        top: -90px;
-        right: 1rem;
-        height: calc(90px - 32px);
-        width: auto;
-
-        .is-rtl & {
-          left: 1rem;
-          right: initial;
-        }
-      }
-      &.decor-shadow {
-        box-shadow: 0 3px 8px 0 rgba(116, 129, 141, 0.1);
-      }
-      &.decor-outline {
-        border: 1px solid $theme-grey-400;
-      }
-      &.uml-diagram {
-        margin: 1rem 0;
-      }
-    }
-
-    figure.image {
-      margin: 1rem 0 0 0;
-
-      img {
-        margin: 0 auto;
-      }
-      figcaption {
-        padding: 4px 1rem;
-        text-align: center;
-        font-size: 12px;
-        color: $theme-grey-700;
-        background-color: $theme-grey-100;
-
-        .theme--dark & {
-          color: $theme-grey-400;
-          background-color: $theme-grey-800;
-        }
-      }
-    }
-
-    figure.image-style-align-right {
-      float: right;
-    }
-
-    figure.image-style-align-left {
-      float: left;
-    }
-
-    // ---------------------------------
-    // 折叠面板样式
-    // ---------------------------------
-    details {
-      background-color: $theme-grey-50;
-      margin: 1rem 2rem;
-      border: 1px solid $theme-grey-300;
-      border-radius: $border-radius-base;
-
-      > p {
-        padding-left: 0;
-      }
-
-      > summary {
-        border-radius: $border-radius-base;
-        background-color: $theme-grey-50;
-        cursor: pointer;
-        display: list-item;
-        align-items: center;
-        padding: 0.4rem 1rem;
-        transition: background-color .4s ease;
-
-        &:focus {
-          outline: none;
-          background-color: $theme-grey-100;
-        }
-
-        > h1, h2, h3, h4, h5, h6 {
-          width: 95%;
-          display: inline-block;
-
-          &:first-child {
-            margin-top: 0;
-          }
-
-          &:only-child::after {
-            display: none;
-          }
+        @at-root .theme--dark & {
+          border-bottom: none;
         }
       }
 
-      &[open] {
-        padding: 1rem;
+      tbody th {
+        background-color: lighten(mc('blue-grey', '50'), 4%);
 
-        > summary {
-          background-color: $theme-grey-100;
-          border-bottom: 1px solid $theme-grey-300;
-          border-bottom-left-radius: 0;
-          border-bottom-right-radius: 0;
-          margin: -1rem -1rem 1rem -1rem;
+        @at-root .theme--dark & {
+          background-color: darken(mc('grey', '800'), 8%);
         }
-      }
-
-      .theme--dark & {
-        background-color: $theme-grey-900;
-        border-color: $theme-grey-700;
-
-        > summary {
-          background-color: $theme-grey-900;
-          border-color: $theme-grey-700;
-        }
-
-        &[open] > summary {
-          background-color: lighten($theme-grey-900, 5%);
-        }
-      }
-    }
-
-    // ---------------------------------
-    // 高亮样式
-    // ---------------------------------
-    mark {
-      &.pen-red {
-        color: mc('red', '500');
-        background-color: initial;
-      }
-      &.pen-green {
-        color: mc('green', '500');
-        background-color: initial;
-      }
-      &.marker-blue {
-        background-color: mc('blue', '300');
-      }
-      &.marker-yellow {
-        background-color: mc('yellow', '300');
-      }
-      &.marker-pink {
-        background-color: mc('pink', '300');
-      }
-      &.marker-green {
-        background-color: mc('green', '300');
-      }
-    }
-
-    .mention {
-      background-color: rgba(153, 0, 48, .1);
-      color: #990030;
-
-      .theme--dark & {
-        color: mc('pink', '500');
       }
     }
   }
+
+  // -> Add horizontal scrollbar when table is too wide
+  .table-container {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  // ---------------------------------
+  // IMAGES
+  // ---------------------------------
+
+  img {
+    max-width: 100%;
+
+    &.align-left {
+      float: left;
+      margin: 0 1rem 1rem 0;
+    }
+    &.align-right {
+      float: right;
+      margin: 0 0 1rem 1rem;
+      z-index: 1;
+      position: relative;
+    }
+    &.align-center {
+      display: block;
+      max-width: 100%;
+      margin: auto;
+    }
+    &.align-abstopright {
+      position: absolute;
+      top: -90px;
+      right: 1rem;
+      height: calc(90px - 32px);
+      width: auto;
+
+      @at-root .is-rtl & {
+        left: 1rem;
+        right: initial;
+      }
+    }
+    &.decor-shadow {
+      box-shadow: 0 3px 8px 0 rgba(116, 129, 141, 0.1);
+    }
+    &.decor-outline {
+      border: 1px solid mc('grey', '400');
+    }
+    &.uml-diagram {
+      margin: 1rem 0;
+    }
+  }
+
+  figure.image {
+    margin: 1rem 0 0 0;
+
+    img {
+      margin: 0 auto;
+    }
+    figcaption {
+      padding: 4px 1rem;
+      text-align: center;
+      font-size: 12px;
+      color: mc('grey', '700');
+      background-color: mc('grey', '100');
+
+      @at-root .theme--dark & {
+        color: mc('grey', '400');
+        background-color: mc('grey', '800');
+      }
+    }
+  }
+
+  figure.image-style-align-right {
+    float: right;
+  }
+
+  figure.image-style-align-left {
+    float: left;
+  }
+
+  // ---------------------------------
+  // DETAILS
+  // ---------------------------------
+
+  details {
+    background-color: mc('grey', '50');
+    margin: 1rem 2rem;
+    border: 1px solid mc('grey', '300');
+    border-radius: 7px;
+
+    > p {
+      padding-left: 0;
+    }
+
+    > summary {
+      border-radius: 7px;
+      background-color: mc('grey', '50');
+      cursor: pointer;
+      display: list-item;
+      align-items: center;
+      padding: 0.4rem 1rem;
+      transition: background-color .4s ease;
+
+      &:focus {
+        outline: none;
+        background-color: mc('grey', '100');
+      }
+
+      > h1, h2, h3, h4, h5, h6 {
+        width: 95%;
+        display: inline-block;
+
+        &:first-child {
+          margin-top: 0;
+        }
+
+        &:only-child::after {
+          display: none;
+        }
+      }
+    }
+
+    &[open] {
+      padding: 1rem;
+
+      > summary {
+        background-color: mc('grey', '100');
+        border-bottom: 1px solid mc('grey', '300');
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        margin: -1rem -1rem 1rem -1rem;
+      }
+    }
+
+    @at-root .theme--dark & {
+      background-color: mc('grey', '900');
+      border-color: mc('grey', '700');
+
+      > summary {
+        background-color: mc('grey', '900');
+        border-color: mc('grey', '700');
+      }
+
+      &[open] > summary {
+        background-color: lighten(mc('grey', '900'), 5%);
+      }
+    }
+
+  }
+
+  // ---------------------------------
+  // HIGHLIGHTING
+  // ---------------------------------
+
+  mark {
+    &.pen-red {
+      color: mc('red', '500');
+      background-color: initial;
+    }
+    &.pen-green {
+      color: mc('green', '500');
+      background-color: initial;
+    }
+    &.marker-blue {
+      background-color: mc('blue', '300');
+    }
+    &.marker-yellow {
+      background-color: mc('yellow', '300');
+    }
+    &.marker-pink {
+      background-color: mc('pink', '300');
+    }
+    &.marker-green {
+      background-color: mc('green', '300');
+    }
+  }
+
+  .mention {
+    background-color: rgba(153, 0, 48, .1);
+    color: #990030;
+
+    @at-root .theme--dark & {
+      color: mc('pink', '500');
+    }
+  }
+
 }
 
+// ---------------------------------
+// COMMENTS
+// ---------------------------------
 
-// ==================================================
-// 5. 评论区样式
-// ==================================================
 .comments {
   &-container {
-    border-radius: $border-radius-base;
+    border-radius: 7px;
   }
 
   &-header {
-    color: $white;
+    color: #FFF;
     padding: 8px 20px;
     font-size: 16px;
     font-weight: 500;
-    background-color: $theme-blue-grey-500;
-    border-radius: $border-radius-base $border-radius-base 0 0;
+    background-color: mc('blue-grey', '500');
+    border-radius: 7px 7px 0 0;
 
-    .theme--dark & {
-      background-color: lighten($theme-blue-grey-900, 5%);
+    @at-root .theme--dark & {
+      background-color: lighten(mc('blue-grey', '900'), 5%);
     }
   }
 
   &-main {
-    background-color: $theme-blue-grey-50;
-    border-radius: 0 0 $border-radius-base $border-radius-base;
+    background-color: mc('blue-grey', '50');
+    border-radius: 0 0 7px 7px;
     padding: 20px;
 
-    .theme--dark & {
-      background-color: darken($theme-grey-900, 5%);
+    @at-root .theme--dark & {
+      background-color: darken(mc('grey', '900'), 5%);
     }
   }
 }
 
+// ---------------
+// RTL FIXES
+// Vuetify GH Issue: https://github.com/vuetifyjs/vuetify/issues/6317
+// ---------------
 
-// ==================================================
-// 6. RTL（从右到左）布局修复
-// ==================================================
 .is-rtl {
   .page-col-content.is-page-header {
     @each $size, $width in $grid-breakpoints {
@@ -1427,10 +1215,10 @@ $font-icon: "Material Design Icons", sans-serif;
   }
 }
 
+// ---------------
+// PRINT OVERRIDES
+// ---------------
 
-// ==================================================
-// 7. 打印样式覆盖
-// ==================================================
 @media print {
   .nav-header,
   .v-navigation-drawer,
@@ -1452,8 +1240,8 @@ $font-icon: "Material Design Icons", sans-serif;
     margin-left: 0 !important;
 
     > .v-toolbar {
-      border: 1px solid $theme-grey-300 !important;
-      border-radius: $border-radius-sm !important;
+      border: 1px solid mc('grey', '300') !important;
+      border-radius: 7px !important;
 
       & + .v-divider {
         display: none !important;
@@ -1464,27 +1252,27 @@ $font-icon: "Material Design Icons", sans-serif;
   .v-main {
     padding: 0 !important;
     font-size: 14px;
-    background-color: $white;
+    background-color: #FFF;
   }
 
   .v-main .contents {
-    color: $black;
-    background-color: $white;
+    color: #000;
+    background-color: #FFF;
 
-    .theme--dark & {
-      color: $black;
+    @at-root .theme--dark & {
+      color: #000;
     }
 
-    .prismjs {
+    .prismjs{
       box-shadow: none;
-      background-color: $white;
+      background-color: #FFF;
 
-      .theme--dark & {
-        background-color: $white;
+      @at-root .theme--dark & {
+        background-color: #FFF;
       }
 
       > code {
-        color: $black;
+        color: #000;
         box-shadow: none;
         text-shadow: none;
         white-space: pre-wrap !important;
@@ -1499,5 +1287,92 @@ $font-icon: "Material Design Icons", sans-serif;
 
   .page-edit-shortcuts {
     display: none;
+  }
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted #000
+}
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 240px;
+  background-color: #000;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  top: 100%;
+  left: 50%;
+  margin-left: -60px
+}
+.tooltip:hover .tooltiptext {
+  visibility: visible
+}
+.enemyicon {
+  position: relative;
+  display: inline-block
+}
+.yes {
+  background: #2b2b2b;
+  color: #fff;
+  padding: 0 10px;
+  border-radius: 20px;
+  box-shadow: 0 0 4px 0 #590707
+}
+.enemy-image {
+  width: 130px;
+  height: 130px;
+  display: block;
+  max-width: none
+}
+.enemyicon-index {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50px;
+  height: 16px;
+  line-height: 16px;
+  font-size: 14px;
+  text-align: center;
+  font-weight: 700;
+  font-family: sans-serif;
+  color: #fff;
+  background-color: rgba(0,0,0,.6)
+}
+.wikitable {
+  text-align: center;
+  width: 100%;
+  display: table
+}
+@media screen and (max-width:768px) {
+  .none-mobile {
+    display: none
+  }
+}
+#red {
+  color: red
+}
+#blue {
+  color: #0ff
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center
+}
+.recipe_slot {
+  border: 2px solid #a2f;
+  border-radius: 15px;
+  padding: 3px
+}
+@media (max-width:768px) {
+  .recipe_slot {
+    width: 70%
   }
 }
